@@ -3,6 +3,9 @@ import express from 'express'
 import config from './config/config';
 import { errorHandler } from './middlewares/errorHandler';
 import { AppDataSource } from './config/data-source';
+import { User } from './entities/user.entity';
+import { UserCourses } from './entities/userCourses.entity';
+import userRouter from './routes/user.routes';
 
 const app = express();
 
@@ -12,7 +15,7 @@ app.use(express.json())
 AppDataSource.initialize();
 
 //define routes
-
+app.use('/api/user',userRouter)
 
 //health check route
 app.use('/health',async(req,res)=>{
