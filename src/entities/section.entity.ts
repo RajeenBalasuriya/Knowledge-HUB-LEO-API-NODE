@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, BaseEntity } from "typeorm";
 import { Courses } from "./courses.entity";
 import { SectionMaterial } from "./sectionMaterial.entity";
 
 @Entity()
-export class Section {
+export class Section extends BaseEntity {
   @PrimaryGeneratedColumn()
   section_id: number;
 

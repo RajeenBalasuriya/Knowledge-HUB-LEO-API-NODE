@@ -1,9 +1,9 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn,BaseEntity } from "typeorm";
 import { User } from "./user.entity";
 import { Courses } from "./courses.entity";
 
 @Entity()
-export class UserCourses {
+export class UserCourses extends BaseEntity{
   @PrimaryColumn({ type: "int" })
   user_id: number;
 

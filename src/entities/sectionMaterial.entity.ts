@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, BaseEntity } from "typeorm";
 import { Section } from "./section.entity";
 
 @Entity()
-export class SectionMaterial {
+export class SectionMaterial extends BaseEntity{
   @PrimaryGeneratedColumn()
   material_id: number;
 

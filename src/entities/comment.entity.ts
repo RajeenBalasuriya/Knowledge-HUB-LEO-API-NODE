@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, BaseEntity } from "typeorm";
 import { User } from "./user.entity";
 import { Courses } from "./courses.entity";
 
 @Entity()
-export class Comment {
+export class Comment extends BaseEntity{
   @PrimaryGeneratedColumn()
   comment_id: number;
 
