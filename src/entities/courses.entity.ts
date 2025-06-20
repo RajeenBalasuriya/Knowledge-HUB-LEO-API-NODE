@@ -9,25 +9,25 @@ export class Courses {
   @PrimaryGeneratedColumn()
   crs_id: number;
 
-  @Column({ length: 200 })
+  @Column({ type: "varchar", length: 200 })
   crs_desc: string;
 
-  @Column()
+  @Column({ type: "int" })
   crs_sections: number;
 
-  @Column({ length: 100 })
+  @Column({ type: "varchar", length: 100 })
   crs_author: string;
 
-  @Column()
+  @Column({ type: "int" })
   crs_rating: number;
 
-  @Column({ length: 200 })
+  @Column({ type: "varchar", length: 200 })
   crs_img: string;
 
-  @Column({ length: 100 })
+  @Column({ type: "varchar", length: 100 })
   crs_name: string;
 
-  @Column()
+  @Column({ type: "int" })
   enr_count: number;
 
   @OneToMany(() => Section, (section) => section.course)

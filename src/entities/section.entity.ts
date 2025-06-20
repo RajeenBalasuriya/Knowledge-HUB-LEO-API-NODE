@@ -1,19 +1,19 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
-import { Courses } from "./Courses";
-import { SectionMaterial } from "./SectionMaterial";
+import { Courses } from "./courses.entity";
+import { SectionMaterial } from "./sectionMaterial.entity";
 
 @Entity()
 export class Section {
   @PrimaryGeneratedColumn()
   section_id: number;
 
-  @Column({ length: 50 })
+  @Column({ type: "varchar", length: 50 })
   section_name: string;
 
-  @Column({ length: 200 })
+  @Column({ type: "varchar", length: 200 })
   section_desc: string;
 
-  @Column()
+  @Column({ type: "int" })
   section_duration: number;
 
   @ManyToOne(() => Courses, (course) => course.sections)

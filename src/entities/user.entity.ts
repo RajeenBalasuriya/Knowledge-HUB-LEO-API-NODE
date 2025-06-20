@@ -8,22 +8,22 @@ export class User {
   @PrimaryGeneratedColumn()
   user_id: number;
 
-  @Column({ length: 50 })
+  @Column({ type: "varchar", length: 50 })
   first_name: string;
 
-  @Column({ length: 50 })
+  @Column({ type: "varchar", length: 50 })
   last_name: string;
 
-  @Column({ length: 50 })
+  @Column({ type: "varchar", length: 50 })
   email: string;
 
-  @Column()
+  @Column({ type: "bigint" }) // or "varchar" if you want to store as string
   mobile_no: number;
 
-  @Column({ length: 20 })
+  @Column({ type: "varchar", length: 20 })
   role: string;
 
-  @Column({ length: 100, nullable: true })
+  @Column({ type: "varchar", length: 100, nullable: true })
   profile_img: string;
 
   @ManyToOne(() => Courses, (course) => course.users, { nullable: true })

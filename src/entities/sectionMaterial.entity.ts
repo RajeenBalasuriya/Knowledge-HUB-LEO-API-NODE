@@ -6,10 +6,10 @@ export class SectionMaterial {
   @PrimaryGeneratedColumn()
   material_id: number;
 
-  @Column({ length: 200 })
+  @Column({ type: "varchar", length: 200 })
   vid_link: string;
 
-  @Column({ length: 200 })
+  @Column({ type: "varchar", length: 200 })
   pdf_link: string;
 
   @ManyToOne(() => Section, (section) => section.materials)

@@ -4,10 +4,10 @@ import { Courses } from "./courses.entity";
 
 @Entity()
 export class UserCourses {
-  @PrimaryColumn()
+  @PrimaryColumn({ type: "int" })
   user_id: number;
 
-  @PrimaryColumn()
+  @PrimaryColumn({ type: "int" })
   crs_id: number;
 
   @ManyToOne(() => User, (user) => user.userCourses)
@@ -21,10 +21,10 @@ export class UserCourses {
   @Column({ type: "timestamp" })
   enrolled_at: Date;
 
-  @Column()
+  @Column({ type: "int" })
   progress_minutes: number;
 
-  @Column()
+  @Column({ type: "boolean" })
   completed: boolean;
 
   @Column({ type: "timestamp" })

@@ -1,10 +1,15 @@
+import 'reflect-metadata'
 import express from 'express'
 import config from './config/config';
 import { errorHandler } from './middlewares/errorHandler';
+import { AppDataSource } from './config/data-source';
 
 const app = express();
 
 app.use(express.json())
+
+//create database connection with type orm 
+AppDataSource.initialize();
 
 //define routes
 

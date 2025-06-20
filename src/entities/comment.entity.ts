@@ -15,9 +15,9 @@ export class Comment {
   @JoinColumn({ name: "crs_id" })
   course: Courses;
 
-  @Column({ length: 100 })
+  @Column({ type: "varchar", length: 100 })  // Explicit type for string
   content: string;
 
-  @Column({ type: "timestamp" })
+  @Column({ type: "timestamp" })  // Already explicit
   timestamp: Date;
 }
