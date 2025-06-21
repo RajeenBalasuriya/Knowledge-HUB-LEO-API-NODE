@@ -17,6 +17,9 @@ export class User extends BaseEntity {
   @Column({ type: "varchar", length: 50 })
   email: string;
 
+  @Column({ type: "varchar", length: 100})
+  password: string;
+
   @Column({ type: "bigint" }) // or "varchar" if you want to store as string
   mobile_no: number;
 

@@ -1,5 +1,5 @@
 // dtos/create-user.dto.ts
-import { IsEmail, IsOptional, IsString, IsNumber } from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsNumber, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -10,6 +10,10 @@ export class CreateUserDto {
 
   @IsEmail()
   email: string;
+
+  @IsString()
+  @MinLength(6, { message: 'Password must be at least 6 characters' })
+  password: string;
 
   @IsNumber()
   mobile_no: number;

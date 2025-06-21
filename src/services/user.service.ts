@@ -1,11 +1,17 @@
 import { User } from "../entities/user.entity";
 import { IUser } from "../interfaces/IUser.interface";
-import { FindOptionsWhere } from "typeorm";
 
 export class UserService {
-  async createUser(data:IUser) {
-    const { first_name, last_name, email, mobile_no, role, profile_img } =
-      data;
+  async createUser(data: IUser) {
+    const {
+      first_name,
+      last_name,
+      email,
+      password,
+      mobile_no,
+      role,
+      profile_img,
+    } = data;
 
     // Check for existence
     const userExists = await User.findOne({ where: { email } });
@@ -17,7 +23,15 @@ export class UserService {
       };
     }
 
-    const user = User.create({first_name, last_name, email, mobile_no, role, profile_img});
+    const user = User.create({
+      first_name,
+      last_name,
+      email,
+      password,
+      mobile_no,
+      role,
+      profile_img,
+    });
     const createdUser = await user.save();
 
     return {
@@ -33,6 +47,15 @@ export class UserService {
       take: limit,
       order: {
         first_name: "ASC",
+      },
+      select: {
+        user_id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        mobile_no: true,
+        role: true,
+        profile_img: true,
       },
     });
 

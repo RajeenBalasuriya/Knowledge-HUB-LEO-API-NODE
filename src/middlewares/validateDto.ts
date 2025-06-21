@@ -17,7 +17,7 @@ export function validateDto<T extends object>(dtoClass: ClassConstructor<T>) {
     return;
     }
 
-//replace req.body with validated data
+    //replace req.body with validated data
     req.body = dtoObject;
 
     next();

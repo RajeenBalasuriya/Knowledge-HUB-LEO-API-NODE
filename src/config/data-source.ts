@@ -15,6 +15,6 @@ export const AppDataSource = new DataSource({
   password: config.db.password,
   database: config.db.name,
   entities: [User, Section, SectionMaterial,Comment,Courses,UserCourses],
-  synchronize: false,
+  synchronize: true,
   logging: false,
 });
