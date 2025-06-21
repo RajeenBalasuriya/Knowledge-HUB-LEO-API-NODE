@@ -3,6 +3,8 @@ import { Router } from "express";
 import { createUser } from "../controllers/user.controller";
 import { getUsers } from "../controllers/user.controller";
 import { updateUser } from "../controllers/user.controller";
+import { deleteUser } from "../controllers/user.controller";
+import { getUserById } from "../controllers/user.controller";
 
 import { CreateUserDto } from "../DTOs/create-user.dto";
 import { validateDto } from "../middlewares/validateDto";
@@ -13,7 +15,9 @@ const userRouter = Router();
 //define user routes
 userRouter.post('/',validateDto(CreateUserDto),createUser);
 userRouter.get('/',getUsers);
+userRouter.get('/:id',getUserById)
 userRouter.put('/:id',validateDto(UpdateUserDto),updateUser)
+userRouter.delete('/:id',deleteUser)
 
 export default userRouter;
 
