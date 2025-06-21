@@ -1,66 +1,42 @@
 import { Request, Response, NextFunction } from "express";
-import { User } from "../entities/user.entity";
+import { UserService } from "../services/user.service";
+import { IUser } from "../interfaces/IUser.interface";
 
-interface IUser {
-  first_name: string;
-  last_name: string;
-  email: string;
-  mobile_no: number;
-  role: string;
-  profile_img?: string | null; // nullable
-}
+const userService = new UserService();
 
-//create user function being exported
+// Create user
 export const createUser = async (
   req: Request<{}, {}, IUser>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { first_name, last_name, email, mobile_no, role, profile_img } =
-      req.body;
+     
+    const { exists, user } = await userService.createUser(req.body );
 
-    //check for existane
-    const userExists = await User.findOne({
-      where: {
-        email: email,
-      },
-    });
-
-    if (userExists) {
-      res.status(409).json({
+    if (exists) {
+       res.status(409).json({
         status: "error",
-        message: `A user with this email already exists.`,
+        message: "A user with this email already exists.",
         error: {
           code: "DUPLICATE_EMAIL",
-          details: { email },
+          details: { email: user.email },
         },
       });
-
       return;
     }
 
-    const user = User.create({
-      first_name,
-      last_name,
-      email,
-      mobile_no,
-      role,
-      profile_img,
-    });
-
-    const createdUser = await user.save();
     res.status(201).json({
       status: "success",
       message: "User created successfully",
       data: {
         user: {
-          id: createdUser.user_id,
-          name: `${createdUser.first_name} ${createdUser.last_name}`,
-          email: createdUser.email,
-          role: createdUser.role,
-          mobile_no: createdUser.mobile_no,
-          profile_img: createdUser.profile_img,
+          id: user.user_id,
+          name: `${user.first_name} ${user.last_name}`,
+          email: user.email,
+          role: user.role,
+          mobile_no: user.mobile_no,
+          profile_img: user.profile_img,
         },
         meta: null,
       },
@@ -70,35 +46,20 @@ export const createUser = async (
   }
 };
 
-//read user function being exported
-export const getUsers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+// Get all users
+export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-    const skip = (page - 1) * limit;
 
-    const [users, count] = await User.findAndCount({
-      skip,
-      take: limit,
-      order: {
-        first_name: "ASC",
-      },
-    });
+    const { users, meta } = await userService.getUsers(page, limit);
 
     res.status(200).json({
       status: "success",
       message: "Users fetched successfully",
       data: {
         users,
-        meta: {
-          total: count,
-          page,
-          last_page: Math.ceil(count / limit),
-        },
+        meta,
       },
     });
   } catch (err) {
@@ -106,19 +67,14 @@ export const getUsers = async (
   }
 };
 
-//get user by id function being exported
-export const getUserById = async (
-  req: Request<{ id: string }>,
-  res: Response,
-  next: NextFunction
-) => {
+// Get user by ID
+export const getUserById = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     const userId = parseInt(req.params.id);
-
-    const user = await User.findOneBy({ user_id: userId });
+    const user = await userService.getUserById(userId);
 
     if (!user) {
-      res.status(404).json({
+       res.status(404).json({
         status: "error",
         message: "User not found",
         error: {
@@ -126,6 +82,7 @@ export const getUserById = async (
           details: null,
         },
       });
+
       return;
     }
 
@@ -149,30 +106,20 @@ export const getUserById = async (
   }
 };
 
-//update user function being exported
-export const updateUser = async (
-  req: Request<{ id: string }>,
-  res: Response,
-  next: NextFunction
-) => {
+// Update user
+export const updateUser = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     const userId = parseInt(req.params.id);
+    const updatedUser = await userService.updateUser(userId, req.body);
 
-    const user = await User.findOneBy({ user_id: userId });
-
-    if (!user) {
-      res.status(404).json({
+    if (!updatedUser) {
+       res.status(404).json({
         status: "error",
         message: "User not found",
       });
 
       return;
     }
-
-    // Update fields
-    Object.assign(user, req.body);
-
-    const updatedUser = await user.save();
 
     res.status(200).json({
       status: "success",
@@ -194,40 +141,32 @@ export const updateUser = async (
   }
 };
 
-//delete user function being exported
-export const deleteUser = async (
-  req: Request<{ id: string }>,
-  res: Response,
-  next: NextFunction
-) => {
+// Delete user
+export const deleteUser = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     const userId = parseInt(req.params.id);
+    const deletedUser = await userService.deleteUser(userId);
 
-    const user = await User.findOneBy({ user_id: userId });
-
-    if (!user) {
-      res.status(404).json({
-  status: "error",
-  message: "User not found",
-  error: {
-    code: "USER_NOT_FOUND",
-    details: null,
-  },
-});
-
-      return;
+    if (!deletedUser) {
+       res.status(404).json({
+        status: "error",
+        message: "User not found",
+        error: {
+          code: "USER_NOT_FOUND",
+          details: null,
+        },
+      });
+      return
     }
-
-    await user.remove(); // Active Record style deletion
 
     res.status(200).json({
       status: "success",
       message: "User deleted successfully",
       data: {
         user: {
-          id: user.user_id,
-          name: `${user.first_name} ${user.last_name}`,
-          email: user.email,
+          id: deletedUser.user_id,
+          name: `${deletedUser.first_name} ${deletedUser.last_name}`,
+          email: deletedUser.email,
         },
         meta: null,
       },
