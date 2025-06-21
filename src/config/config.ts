@@ -10,6 +10,9 @@ interface Config {
     password: string;
     name: string;
   };
+  jwt:{
+    secret:string;
+  }
 }
 
 const config: Config = {
@@ -21,6 +24,9 @@ const config: Config = {
     password: process.env.DB_PASS || '',
     name: process.env.DB_NAME || 'test',
   },
+  jwt:{
+    secret:process.env.JWT_SECRET
+  }
 };
 
 export default config;
