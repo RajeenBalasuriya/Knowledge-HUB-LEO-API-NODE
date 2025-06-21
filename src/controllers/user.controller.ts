@@ -91,3 +91,35 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
     next(err);
   }
 };
+
+//update user function being exported
+export const updateUser = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    const userId = parseInt(req.params.id);
+
+    const user = await User.findOneBy({ user_id: userId });
+
+    if (!user) {
+       res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+
+      return
+    }
+
+    // Update fields 
+    Object.assign(user, req.body);
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "User updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
