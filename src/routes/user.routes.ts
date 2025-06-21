@@ -6,15 +6,17 @@ import { updateUser } from "../controllers/user.controller";
 import { deleteUser } from "../controllers/user.controller";
 import { getUserById } from "../controllers/user.controller";
 
-import { CreateUserDto } from "../DTOs/create-user.dto";
 import { validateDto } from "../middlewares/validateDto";
+import { authenticateMiddleware } from "../middlewares/auth";
+
+import { CreateUserDto } from "../DTOs/create-user.dto";
 import { UpdateUserDto } from "../DTOs/update-user.dto";
 
 const userRouter = Router();
 
 //define user routes
 userRouter.post('/',validateDto(CreateUserDto),createUser);
-userRouter.get('/',getUsers);
+userRouter.get('/',authenticateMiddleware,getUsers);
 userRouter.get('/:id',getUserById)
 userRouter.put('/:id',validateDto(UpdateUserDto),updateUser)
 userRouter.delete('/:id',deleteUser)
