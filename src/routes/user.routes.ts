@@ -18,7 +18,7 @@ const userRouter = Router();
 userRouter.post('/',validateDto(CreateUserDto),createUser);
 userRouter.get('/',authenticateMiddleware,getUsers);
 userRouter.get('/:id',getUserById)
-userRouter.put('/:id',validateDto(UpdateUserDto),updateUser)
+userRouter.put('/:id',authenticateMiddleware,validateDto(UpdateUserDto),updateUser)
 userRouter.delete('/:id',deleteUser)
 
 export default userRouter;

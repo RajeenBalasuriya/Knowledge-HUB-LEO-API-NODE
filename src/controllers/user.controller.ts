@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { UserService } from "../services/user.service";
 import { IUser } from "../interfaces/IUser.interface";
-
+import { AuthRequest } from "../interfaces/IAuthRequest.interface";
+import { IJwtUser } from "../interfaces/IUserJwt.interface";
+import { checkUpdateAccess } from "../utils/checkUpdateAccess";
 
 const userService = new UserService();
 
@@ -12,11 +14,10 @@ export const createUser = async (
   next: NextFunction
 ) => {
   try {
-     
-    const { exists, user } = await userService.createUser(req.body );
+    const { exists, user } = await userService.createUser(req.body);
 
     if (exists) {
-       res.status(409).json({
+      res.status(409).json({
         status: "error",
         message: "A user with this email already exists.",
         error: {
@@ -48,7 +49,11 @@ export const createUser = async (
 };
 
 // Get all users
-export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
+export const getUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
@@ -69,13 +74,17 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
 };
 
 // Get user by ID
-export const getUserById = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+export const getUserById = async (
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userId = parseInt(req.params.id);
     const user = await userService.getUserById(userId);
 
     if (!user) {
-       res.status(404).json({
+      res.status(404).json({
         status: "error",
         message: "User not found",
         error: {
@@ -108,13 +117,30 @@ export const getUserById = async (req: Request<{ id: string }>, res: Response, n
 };
 
 // Update user
-export const updateUser = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+export const updateUser = async (
+  req: AuthRequest<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
+    console.log(
+      `user from token ${req.user.id},user id from params ${req.params.id}`
+    );
+    const userFromToken: IJwtUser = req.user;
+    const userIdFromParams = req.params.id;
+
+    const updateAcess_NO:Object =checkUpdateAccess(userFromToken,userIdFromParams);
+
+    if(updateAcess_NO){
+      res.status(404).json(updateAcess_NO)
+      return;
+    }
+
     const userId = parseInt(req.params.id);
     const updatedUser = await userService.updateUser(userId, req.body);
 
     if (!updatedUser) {
-       res.status(404).json({
+      res.status(404).json({
         status: "error",
         message: "User not found",
       });
@@ -143,13 +169,17 @@ export const updateUser = async (req: Request<{ id: string }>, res: Response, ne
 };
 
 // Delete user
-export const deleteUser = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+export const deleteUser = async (
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userId = parseInt(req.params.id);
     const deletedUser = await userService.deleteUser(userId);
 
     if (!deletedUser) {
-       res.status(404).json({
+      res.status(404).json({
         status: "error",
         message: "User not found",
         error: {
@@ -157,7 +187,7 @@ export const deleteUser = async (req: Request<{ id: string }>, res: Response, ne
           details: null,
         },
       });
-      return
+      return;
     }
 
     res.status(200).json({
