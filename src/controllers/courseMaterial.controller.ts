@@ -36,3 +36,38 @@ export const createCourseMaterial = async (
     next(err);
   }
 };
+
+//delete courseMaterial controller
+export const deleteCourseMaterial = async (
+  req: AuthRequest<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const courseMaterialId = parseInt(req.params.id);
+    const courseMaterialToDelete = await courseMaterialService.getCourseMaterialById(courseMaterialId);
+    const deletedCourseMaterial = await courseMaterialService.deleteCourseMaterial(courseMaterialId);
+
+    if (!deletedCourseMaterial) {
+      res.status(404).json({
+        status: "error",
+        message: "Course material not found",
+        error: {
+          code: "COURSE_MATERIAL_NOT_FOUND",
+          details: `No course material found with id ${courseMaterialId}`,
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Course material deleted successfully",
+      data: {
+        courseMaterialToDelete
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
