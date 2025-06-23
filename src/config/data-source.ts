@@ -2,10 +2,12 @@ import { DataSource } from "typeorm";
 import config from "./config"; // import your shared config
 import { User } from "../entities/user.entity";
 import { Section } from "../entities/section.entity";
-import { SectionMaterial } from "../entities/sectionMaterial.entity";
-import { Courses } from "../entities/courses.entity";
+import { Course } from "../entities/courses.entity";
 import { UserCourses } from "../entities/userCourses.entity";
 import { Comment } from "../entities/comment.entity";
+import { CoursesMaterial } from "../entities/courseMaterial.entity";
+import { Question } from "../entities/question.entity";
+import { Answer } from "../entities/answer.entity";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -14,7 +16,7 @@ export const AppDataSource = new DataSource({
   username: config.db.user,
   password: config.db.password,
   database: config.db.name,
-  entities: [User, Section, SectionMaterial,Comment,Courses,UserCourses],
+  entities: [User, Section,Comment,Course,UserCourses,CoursesMaterial,Question,Answer],
   synchronize: true,
   logging: false,
 });

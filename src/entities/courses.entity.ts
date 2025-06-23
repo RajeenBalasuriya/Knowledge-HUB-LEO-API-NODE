@@ -6,7 +6,7 @@ import { User } from "./user.entity";
 import { CoursesMaterial } from "./courseMaterial.entity";
 
 @Entity()
-export class Courses extends BaseEntity {
+export class Course extends BaseEntity {
   @PrimaryGeneratedColumn()
   crs_id: number;
 

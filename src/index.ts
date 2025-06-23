@@ -3,10 +3,10 @@ import express from 'express'
 import config from './config/config';
 import { errorHandler } from './middlewares/errorHandler';
 import { AppDataSource } from './config/data-source';
-import { User } from './entities/user.entity';
-import { UserCourses } from './entities/userCourses.entity';
+
 import userRouter from './routes/user.routes';
 import authRouter from './routes/auth.routes';
+import courseRouter from './routes/course.routes';
 
 const app = express();
 
@@ -18,6 +18,7 @@ AppDataSource.initialize();
 //define routes
 app.use('/api/user',userRouter)
 app.use('/api/auth',authRouter)
+app.use('/api/course',courseRouter)
 
 //health check route
 app.use('/health',async(req,res)=>{

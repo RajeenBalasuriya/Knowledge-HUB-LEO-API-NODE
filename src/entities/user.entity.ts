@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn,BaseEntity } from "typeorm";
 import { UserCourses } from "./userCourses.entity";
 import { Comment } from "./comment.entity";
-import { Courses } from "./courses.entity";
+import { Course } from "./courses.entity";
 
 @Entity()
 export class User extends BaseEntity {
@@ -29,9 +29,9 @@ export class User extends BaseEntity {
   @Column({ type: "varchar", length: 100, nullable: true })
   profile_img: string;
 
-  @ManyToOne(() => Courses, (course) => course.users, { nullable: true })
+  @ManyToOne(() => Course, (course) => course.users, { nullable: true })
   @JoinColumn({ name: "crs_id" })
-  course: Courses;
+  course: Course;
 
   @OneToMany(() => UserCourses, (userCourses) => userCourses.user)
   userCourses: UserCourses[];

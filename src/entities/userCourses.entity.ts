@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn,BaseEntity } from "typeorm";
 import { User } from "./user.entity";
-import { Courses } from "./courses.entity";
+import { Course } from "./courses.entity";
 
 @Entity()
 export class UserCourses extends BaseEntity{
@@ -14,9 +14,9 @@ export class UserCourses extends BaseEntity{
   @JoinColumn({ name: "user_id" })
   user: User;
 
-  @ManyToOne(() => Courses, (course) => course.userCourses)
+  @ManyToOne(() => Course, (course) => course.userCourses)
   @JoinColumn({ name: "crs_id" })
-  course: Courses;
+  course: Course;
 
   @Column({ type: "timestamp" })
   enrolled_at: Date;

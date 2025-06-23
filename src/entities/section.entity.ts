@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, BaseEntity } from "typeorm";
-import { Courses } from "./courses.entity";
+import { Course } from "./courses.entity";
 import { Question } from "./question.entity";
 
 
@@ -17,9 +17,9 @@ export class Section extends BaseEntity {
   @Column({ type: "int" })
   section_duration: number;
 
-  @ManyToOne(() => Courses, (course) => course.sections)
+  @ManyToOne(() => Course, (course) => course.sections)
   @JoinColumn({ name: "crs_id" })
-  course: Courses;
+  course: Course;
 
   @OneToMany(() => Question, (question) => question.section)
 questions: Question[];

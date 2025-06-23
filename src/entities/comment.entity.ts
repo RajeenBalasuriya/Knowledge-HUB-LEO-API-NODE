@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, BaseEntity } from "typeorm";
 import { User } from "./user.entity";
-import { Courses } from "./courses.entity";
+import { Course } from "./courses.entity";
 
 @Entity()
 export class Comment extends BaseEntity{
@@ -11,9 +11,9 @@ export class Comment extends BaseEntity{
   @JoinColumn({ name: "user_id" })
   user: User;
 
-  @ManyToOne(() => Courses, (course) => course.comments)
+  @ManyToOne(() => Course, (course) => course.comments)
   @JoinColumn({ name: "crs_id" })
-  course: Courses;
+  course: Course;
 
   @Column({ type: "varchar", length: 100 })  // Explicit type for string
   content: string;
