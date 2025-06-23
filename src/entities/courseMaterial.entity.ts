@@ -12,7 +12,7 @@ export class CourseMaterial extends BaseEntity {
   @Column({ type: "varchar", length: 200 })
   source_url: string;
 
-  @ManyToOne(() => Course, (course) => course.courseMaterials)
+  @ManyToOne(() => Course, (course) => course.courseMaterials,{onDelete: "CASCADE"})
   @JoinColumn({ name: "crs_id" })
   course: Course;
 }

@@ -134,3 +134,39 @@ export const updateCourse = async (
     next(err);
   }
 };
+
+//delete course controller
+export const deleteCourse = async (
+  req: AuthRequest<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) => {  
+  try {
+    const courseId = parseInt(req.params.id);
+    const courseToDelete = await courseService.getCourseById(courseId);
+    const deletedCourse = await courseService.deleteCourse(courseId);
+    
+
+    if (!deletedCourse) {
+      res.status(404).json({
+        status: "error",
+        message: "Course not found",
+        error: {
+          code: "COURSE_NOT_FOUND",
+          details: `No course found with id ${courseId}`,
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Course deleted successfully",
+      data: {
+        courseToDelete
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}

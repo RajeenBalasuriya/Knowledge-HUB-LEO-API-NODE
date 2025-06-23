@@ -3,7 +3,7 @@ import { authenticateMiddleware } from "../middlewares/auth";
 import { checkRoleMiddleware } from "../middlewares/checkRole";
 
 
-import { createCourse, readAllCourse, readCourseById, updateCourse } from "../controllers/course.controller";
+import { createCourse, deleteCourse, readAllCourse, readCourseById, updateCourse } from "../controllers/course.controller";
 import { validateDto } from "../middlewares/validateDto";
 import { CreateCourseDto } from "../DTOs/create-course.dto";
 
@@ -14,4 +14,5 @@ courseRouter.post('/',authenticateMiddleware,checkRoleMiddleware,validateDto(Cre
 courseRouter.get('/', authenticateMiddleware, readAllCourse);
 courseRouter.get('/:id', authenticateMiddleware, readCourseById);
 courseRouter.put('/:id', authenticateMiddleware, checkRoleMiddleware, updateCourse);
+courseRouter.delete('/:id', authenticateMiddleware, checkRoleMiddleware, deleteCourse); 
 export default courseRouter;

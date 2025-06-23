@@ -139,4 +139,31 @@ async updateCourse(user:IUser, courseId:number, courseData:Partial<ICourse>) {
     throw error;
   }
 }
-}
+
+//delete course
+async deleteCourse(courseId: number) {
+  try {
+    const course = await Course.findOne({
+      where: { crs_id: courseId },
+    });
+
+    if (!course) {
+      const error = new Error("Course not found");
+      (error as any).status = 404;
+      (error as any).code = "COURSE_NOT_FOUND";
+      throw error;
+    }
+
+    await course.remove();
+    return course;
+  } catch (err: any) {
+    const error = new Error("Failed to delete course");
+    (error as any).status = 500;
+    (error as any).code = "COURSE_DELETION_FAILED";
+    (error as any).details = {
+      message: err.message,
+      code: err.code || undefined,
+    };
+    throw error;
+  }
+}}
