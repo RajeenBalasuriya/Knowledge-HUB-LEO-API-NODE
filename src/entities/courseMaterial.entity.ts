@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, BaseEnti
 import { Course } from "./courses.entity";
 
 @Entity()
-export class CoursesMaterial extends BaseEntity {
+export class CourseMaterial extends BaseEntity {
   @PrimaryGeneratedColumn()
   crs_m_id: number;
 

@@ -5,7 +5,7 @@ import { Section } from "../entities/section.entity";
 import { Course } from "../entities/courses.entity";
 import { UserCourses } from "../entities/userCourses.entity";
 import { Comment } from "../entities/comment.entity";
-import { CoursesMaterial } from "../entities/courseMaterial.entity";
+import { CourseMaterial } from "../entities/courseMaterial.entity";
 import { Question } from "../entities/question.entity";
 import { Answer } from "../entities/answer.entity";
 
@@ -16,7 +16,7 @@ export const AppDataSource = new DataSource({
   username: config.db.user,
   password: config.db.password,
   database: config.db.name,
-  entities: [User, Section,Comment,Course,UserCourses,CoursesMaterial,Question,Answer],
+  entities: [User, Section,Comment,Course,UserCourses,CourseMaterial,Question,Answer],
   synchronize: true,
   logging: false,
 });
