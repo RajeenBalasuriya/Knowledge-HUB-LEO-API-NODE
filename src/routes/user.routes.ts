@@ -19,7 +19,7 @@ userRouter.post('/',validateDto(CreateUserDto),createUser);
 userRouter.get('/',authenticateMiddleware,getUsers);
 userRouter.get('/:id',getUserById)
 userRouter.put('/:id',authenticateMiddleware,validateDto(UpdateUserDto),updateUser)
-userRouter.delete('/:id',deleteUser)
+userRouter.delete('/:id',authenticateMiddleware,deleteUser)
 
 export default userRouter;
 

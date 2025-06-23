@@ -3,6 +3,7 @@ import { Section } from "./section.entity";
 import { UserCourses } from "./userCourses.entity";
 import { Comment } from "./comment.entity";
 import { User } from "./user.entity";
+import { CoursesMaterial } from "./courseMaterial.entity";
 
 @Entity()
 export class Courses extends BaseEntity {
@@ -41,4 +42,7 @@ export class Courses extends BaseEntity {
 
   @OneToMany(() => User, (user) => user.course)
   users: User[];
+
+@OneToMany(() => CoursesMaterial, (courseMaterial) => courseMaterial.course)
+courseMaterials: CoursesMaterial[];
 }

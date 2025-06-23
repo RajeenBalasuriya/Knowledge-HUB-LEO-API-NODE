@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, BaseEntity } from "typeorm";
 import { Courses } from "./courses.entity";
-import { SectionMaterial } from "./sectionMaterial.entity";
+import { Question } from "./question.entity";
+
 
 @Entity()
 export class Section extends BaseEntity {
@@ -20,6 +21,9 @@ export class Section extends BaseEntity {
   @JoinColumn({ name: "crs_id" })
   course: Courses;
 
-  @OneToMany(() => SectionMaterial, (material) => material.section)
-  materials: SectionMaterial[];
+  @OneToMany(() => Question, (question) => question.section)
+questions: Question[];
+
+
+ 
 }

@@ -170,11 +170,22 @@ export const updateUser = async (
 
 // Delete user
 export const deleteUser = async (
-  req: Request<{ id: string }>,
+  req: AuthRequest<{ id: string }>,
   res: Response,
   next: NextFunction
 ) => {
   try {
+
+    
+    const userFromToken: IJwtUser = req.user;
+    const userIdFromParams = req.params.id;
+
+    const updateAcess_NO:Object =checkUpdateAccess(userFromToken,userIdFromParams);
+
+    if(updateAcess_NO){
+      res.status(404).json(updateAcess_NO)
+      return;
+    }
     const userId = parseInt(req.params.id);
     const deletedUser = await userService.deleteUser(userId);
 
