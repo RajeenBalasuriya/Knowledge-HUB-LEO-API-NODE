@@ -39,3 +39,61 @@ export const createCourse = async (
     next(err);
   }
 };
+
+//read course controller
+export const readAllCourse = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const { plainCourses, meta } = await courseService.getAllCourses(page, limit);
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        courses: plainCourses,
+        meta,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+//read course by id controller
+export const readCourseById = async (
+  req: AuthRequest<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const courseId = parseInt(req.params.id);
+    const course = await courseService.getCourseById(courseId);
+
+    if (!course) {
+      res.status(404).json({
+        status: "error",
+        message: "Course not found",
+        error: {
+          code: "COURSE_NOT_FOUND",
+          details: `No course found with id ${courseId}`,
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+       course,
+       meta:null
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};

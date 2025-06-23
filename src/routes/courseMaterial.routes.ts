@@ -4,6 +4,7 @@ import { checkRoleMiddleware } from "../middlewares/checkRole";
 import { validateDto } from "../middlewares/validateDto";
 import { CreateCourseMaterialDto } from "../DTOs/create-courseMaterial.dto";
 import { createCourseMaterial } from "../controllers/courseMaterial.controller";
+import { create } from "domain";
 
 const courseMaterialRouter = Router();
 

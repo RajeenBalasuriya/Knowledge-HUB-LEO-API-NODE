@@ -40,7 +40,7 @@ export class UserService {
     };
   }
 
-  async getUsers(page = 1, limit = 10) {
+  async getUsers(page :number, limit :number) {
     const skip = (page - 1) * limit;
     const [users, count] = await User.findAndCount({
       skip,
