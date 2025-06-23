@@ -97,3 +97,40 @@ export const readCourseById = async (
     next(err);
   }
 };
+
+// Update course controller
+export const updateCourse = async (
+  req: AuthRequest<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const courseId = parseInt(req.params.id);
+    const courseToUpdate: ICourse = req.body;
+
+    const updatedCourse = await courseService.updateCourse(
+      user,
+      courseId,
+      courseToUpdate
+    );
+
+    res.status(200).json({
+      status: "success",
+      message: "Course updated successfully",
+      data: {
+        course: {
+          id: updatedCourse.crs_id,
+          name: updatedCourse.crs_name,
+          author: updatedCourse.crs_author,
+          rating: updatedCourse.crs_rating,
+          sections: updatedCourse.crs_sections,
+          description: updatedCourse.crs_desc,
+          image: updatedCourse.crs_img,
+        },
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
