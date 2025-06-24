@@ -8,6 +8,7 @@ import userRouter from './routes/user.routes';
 import authRouter from './routes/auth.routes';
 import courseRouter from './routes/course.routes';
 import courseMaterialRouter from './routes/courseMaterial.routes';
+import commentRouter from './routes/comment.routes';
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use('/api/user',userRouter)
 app.use('/api/auth',authRouter)
 app.use('/api/course',courseRouter)
 app.use('/api/course-material',courseMaterialRouter)
+app.use('/api/comment',commentRouter)
 
 //health check route
 app.use('/health',async(req,res)=>{
