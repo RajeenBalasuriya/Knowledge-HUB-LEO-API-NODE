@@ -5,14 +5,14 @@ export class SectionService {
     //create section
     async createSection(section: ISection){
         try{
-        const { section_name, section_desc, section_duration, crs_id } = section;
+        const { sec_name, sec_desc, sec_duration, crs_id } = section;
 
         
 
         const newSection = Section.create({
-            section_name,
-            section_desc,
-            section_duration,
+            section_name:sec_name,
+            section_desc:sec_desc,
+            section_duration:sec_duration,
             course: { crs_id }
         });
 
