@@ -75,6 +75,7 @@ export class CourseService {
       const course = await Course.createQueryBuilder("course")
         .leftJoinAndSelect("course.courseMaterials", "courseMaterial")
         .leftJoinAndSelect("course.comments", "comment")
+        .leftJoinAndSelect("course.sections", "section")
         .leftJoin("comment.user", "user")
         .addSelect(["user.first_name", "user.last_name"])
         .where("course.crs_id = :id", { id: crs_id })
