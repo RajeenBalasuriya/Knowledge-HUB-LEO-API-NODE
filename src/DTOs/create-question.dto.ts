@@ -1,6 +1,16 @@
+import { IsString, IsOptional, IsNumber } from 'class-validator';
+
 export class createQuestionDto {
+  @IsString()
   question: string;
+
+  @IsString()
   question_solution: string;
-  image_url?: string; 
-  section_id: number; 
+
+  @IsOptional()
+  @IsString()
+  image_url?: string;
+
+  @IsNumber()
+  section_id: number;
 }

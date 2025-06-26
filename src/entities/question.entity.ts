@@ -18,7 +18,7 @@ export class Question extends BaseEntity {
 
   @ManyToOne(() => Section, (section) => section.questions)
   @JoinColumn({ name: "section_id" })
-  section: Section;
+  section_id: Section;
 
   @OneToMany(() => Answer, (answer) => answer.question)
   answers: Answer[];

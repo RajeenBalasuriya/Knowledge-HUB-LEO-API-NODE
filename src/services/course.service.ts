@@ -72,14 +72,16 @@ export class CourseService {
   //read course by id
   async getCourseById(crs_id: number) {
     try {
-      const course = await Course.createQueryBuilder("course")
-        .leftJoinAndSelect("course.courseMaterials", "courseMaterial")
-        .leftJoinAndSelect("course.comments", "comment")
-        .leftJoinAndSelect("course.sections", "section")
-        .leftJoin("comment.user", "user")
-        .addSelect(["user.first_name", "user.last_name"])
-        .where("course.crs_id = :id", { id: crs_id })
-        .getOne();
+         const course = await Course.createQueryBuilder("course")
+      .leftJoinAndSelect("course.courseMaterials", "courseMaterial")
+      .leftJoinAndSelect("course.comments", "comment")
+      .leftJoin("comment.user", "user")
+      .addSelect(["user.first_name", "user.last_name"])
+      .leftJoinAndSelect("course.sections", "section")
+      .leftJoinAndSelect("section.questions", "question")
+      .leftJoinAndSelect("question.answers", "answer")
+      .where("course.crs_id = :id", { id: crs_id })
+      .getOne();
 
       if (!course) {
         const error = new Error("Course not found");

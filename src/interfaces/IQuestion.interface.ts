@@ -3,5 +3,5 @@ export interface IQuestion {
     question: string;
     question_solution: string;
     image_url?: string;
-    section_id: number; // ID of the related section
+    section: number; // ID of the related section
 }

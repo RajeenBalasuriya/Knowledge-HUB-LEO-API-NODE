@@ -7,6 +7,8 @@ export function validateDto<T extends object>(dtoClass: ClassConstructor<T>) {
     const dtoObject = plainToInstance(dtoClass, req.body);
     const errors = await validate(dtoObject, { whitelist: true });
 
+    console.log('Validation errors:', errors);
+
     if (errors.length > 0) {
       const formattedErrors = errors.map((err) => ({
         property: err.property,

@@ -11,6 +11,7 @@ import courseMaterialRouter from './routes/courseMaterial.routes';
 import commentRouter from './routes/comment.routes';
 import sectionRouter from './routes/section.routes';
 import questionRouter from './routes/question.router';
+import answerRouter from './routes/answer.rotues';
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/api/course-material',courseMaterialRouter)
 app.use('/api/comment',commentRouter)
 app.use('/api/section',sectionRouter)
 app.use('/api/question',questionRouter)
+app.use('/api/answer',answerRouter) 
 
 //health check route
 app.use('/health',async(req,res)=>{

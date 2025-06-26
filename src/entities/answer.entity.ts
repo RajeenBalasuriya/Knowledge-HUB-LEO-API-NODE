@@ -9,7 +9,7 @@ export class Answer extends BaseEntity {
   @Column({ type: "varchar", length: 200 })
   content: string;
 
-  @Column({ type: "boolean" })
+  @Column({ type: "boolean", default: false })
   isCorrect: boolean;
 
   @ManyToOne(() => Question, (question) => question.answers)

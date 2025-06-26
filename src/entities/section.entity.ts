@@ -21,7 +21,7 @@ export class Section extends BaseEntity {
   @JoinColumn({ name: "crs_id" })
   course: Course;
 
-  @OneToMany(() => Question, (question) => question.section)
+  @OneToMany(() => Question, (question) => question.section_id)
 questions: Question[];
 
 
