@@ -1,6 +1,13 @@
 // services/comment.service.ts
-import { deleteComment } from "../controllers/comment.controller";
+
 import { Comment } from "../entities/comment.entity";
+import { eventEmitter } from "../web-socket /events/eventEmitter";
+import { CourseService } from "./course.service";
+import { UserService } from "./user.service";
+
+const userService = new UserService();
+const courseService = new CourseService();
+
 export class CommentService {
   async createComment({ userId, courseId, content }) {
     const comment = Comment.create({
@@ -11,6 +18,22 @@ export class CommentService {
     });
 
     const commentCreated = await comment.save();
+
+    // Fetch user and course details for the comment
+    const user = await userService.getUserById(userId);
+    const course = await courseService.getCourseById(courseId);
+
+    const enrichedComment = {
+      ...commentCreated,
+      user:{user_name:user.first_name, user_img:user.profile_img},
+      course: {
+        crs_name: course.crs_name,
+        crs_img: course.crs_img,
+      },
+    };
+
+    // Trigger event
+    eventEmitter.emit("commentCreated", enrichedComment);
     return commentCreated;
   }
 
