@@ -1,8 +1,10 @@
 import 'reflect-metadata'
 import express from 'express'
+import http from "http";
 import config from './config/config';
 import { errorHandler } from './middlewares/errorHandler';
 import { AppDataSource } from './config/data-source';
+
 
 import userRouter from './routes/user.routes';
 import authRouter from './routes/auth.routes';
@@ -13,7 +15,11 @@ import sectionRouter from './routes/section.routes';
 import questionRouter from './routes/question.router';
 import answerRouter from './routes/answer.rotues';
 
+import { initSocket } from './web-socket /socket';
+import { registerNotificationListeners } from './web-socket /listeners/notification.listener';
+
 const app = express();
+const server = http.createServer(app); // Wrap Express with HTTP server
 
 app.use(express.json())
 
@@ -37,8 +43,12 @@ app.use('/health',async(req,res)=>{
 
 // Global error handler 
 app.use(errorHandler);
+// Initialize socket.io
+initSocket(server);
+registerNotificationListeners();
 
-//intialize server
-app.listen(config.port,()=>{
-    console.log(`Application is listening on ${config.port}`)
-})
+
+
+server.listen(config.port, () => {
+  console.log(`Server is running on port ${config.port}`);
+});
