@@ -169,4 +169,34 @@ export const deleteCourse = async (
   } catch (err) {
     next(err);
   }
+
+}
+
+ //search course by name controller
+export const searchCourseByName = async (
+  req: AuthRequest<{ name: string }>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const courseName = req.query.name as string;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const { plainCourses, meta } = await courseService.searchCoursesByName(
+      courseName,
+      page,
+      limit
+    );
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        courses: plainCourses,
+        meta,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 }

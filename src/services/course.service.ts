@@ -2,6 +2,7 @@ import { ICourse } from "../interfaces/ICourse.interface";
 import { IJwtUser } from "../interfaces/IUserJwt.interface";
 import { Course } from "../entities/courses.entity";
 import { IUser } from "../interfaces/IUser.interface";
+import { ILike } from "typeorm";
 
 export class CourseService {
   async createCourse(user: IJwtUser, courseData: ICourse) {
@@ -172,4 +173,40 @@ export class CourseService {
       throw error;
     }
   }
+
+  //search courses by name
+async searchCoursesByName(name: string, page: number, limit: number) {
+  const skip = (page - 1) * limit;
+
+  console.log(`Searching for courses with name starting with: ${name}`);
+  const [courses, count] = await Course.findAndCount({
+    where: {
+      crs_name: ILike(`${name}%`), // matches names starting with 'name'
+    },
+    skip,
+    take: limit,
+    order: {
+      crs_name: "ASC",
+    },
+    select: {
+      crs_id: true,
+      crs_name: true,
+      crs_author: true,
+      crs_rating: true,
+      crs_sections: true,
+      crs_desc: true,
+      crs_img: true,
+      enr_count: true,
+    },
+  });
+
+  return {
+    plainCourses: JSON.parse(JSON.stringify(courses)),
+    meta: {
+      total: count,
+      page,
+      last_page: Math.ceil(count / limit),
+    },
+  };
+}
 }
