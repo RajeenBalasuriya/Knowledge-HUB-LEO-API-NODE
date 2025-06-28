@@ -8,6 +8,7 @@ import { Comment } from "../entities/comment.entity";
 import { CourseMaterial } from "../entities/courseMaterial.entity";
 import { Question } from "../entities/question.entity";
 import { Answer } from "../entities/answer.entity";
+import { Notification } from "../entities/notification.entity";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -16,7 +17,7 @@ export const AppDataSource = new DataSource({
   username: config.db.user,
   password: config.db.password,
   database: config.db.name,
-  entities: [User, Section,Comment,Course,UserCourses,CourseMaterial,Question,Answer],
+  entities: [User, Section, Comment, Course, UserCourses, CourseMaterial, Question, Answer, Notification],
   synchronize: true,
   logging: false,
 });

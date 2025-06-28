@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColum
 import { UserCourses } from "./userCourses.entity";
 import { Comment } from "./comment.entity";
 import { Course } from "./courses.entity";
+import { Notification } from "./notification.entity";
 
 @Entity()
 export class User extends BaseEntity {
@@ -38,4 +39,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
+
+  @OneToMany(() => Notification, (notification) => notification.user)
+  notifications: Notification[];
 }
