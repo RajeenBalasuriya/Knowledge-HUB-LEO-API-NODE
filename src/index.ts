@@ -14,6 +14,7 @@ import commentRouter from './routes/comment.routes';
 import sectionRouter from './routes/section.routes';
 import questionRouter from './routes/question.router';
 import answerRouter from './routes/answer.rotues';
+import userCoursesRouter from './routes/userCourses.routes';
 
 import { initSocket } from './web-socket /socket';
 import { registerNotificationListeners } from './web-socket /listeners/notification.listener';
@@ -35,6 +36,7 @@ app.use('/api/comment',commentRouter)
 app.use('/api/section',sectionRouter)
 app.use('/api/question',questionRouter)
 app.use('/api/answer',answerRouter) 
+app.use('/api/user-courses',userCoursesRouter)
 
 //health check route
 app.use('/health',async(req,res)=>{

@@ -6,5 +6,5 @@ export interface ICourse{
   crs_rating: number;
   crs_img: string;
   enr_count: number;
-
+  rating_count: number;
 }

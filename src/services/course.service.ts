@@ -3,6 +3,8 @@ import { IJwtUser } from "../interfaces/IUserJwt.interface";
 import { Course } from "../entities/courses.entity";
 import { IUser } from "../interfaces/IUser.interface";
 import { ILike } from "typeorm";
+import { IRateCourse, IRatingResponse } from "../interfaces/ICourseRating.interface";
+import { UserCourses } from "../entities/userCourses.entity";
 
 export class CourseService {
   async createCourse(user: IJwtUser, courseData: ICourse) {
@@ -25,6 +27,7 @@ export class CourseService {
         crs_rating,
         crs_img,
         enr_count,
+        rating_count: 0, // Initialize rating count to 0
       });
 
       const createdCourse = await course.save();
@@ -56,6 +59,7 @@ export class CourseService {
         crs_desc: true,
         crs_img: true,
         enr_count: true,
+        rating_count: true,
       },
     });
     const plainCourses = JSON.parse(JSON.stringify(courses));
@@ -197,6 +201,7 @@ async searchCoursesByName(name: string, page: number, limit: number) {
       crs_desc: true,
       crs_img: true,
       enr_count: true,
+      rating_count: true,
     },
   });
 
@@ -209,4 +214,108 @@ async searchCoursesByName(name: string, page: number, limit: number) {
     },
   };
 }
+
+  // Rate a course
+  async rateCourse(user: IJwtUser, ratingData: IRateCourse): Promise<IRatingResponse> {
+    try {
+      const course = await Course.findOne({
+        where: { crs_id: ratingData.crs_id },
+      });
+
+      if (!course) {
+        const error = new Error("Course not found");
+        (error as any).status = 404;
+        (error as any).code = "COURSE_NOT_FOUND";
+        throw error;
+      }
+
+      // Check if user is enrolled in the course
+      const enrollment = await UserCourses.findOne({
+        where: {
+          user_id: parseInt(user.id),
+          crs_id: ratingData.crs_id,
+        },
+      });
+
+      if (!enrollment) {
+        const error = new Error("You must be enrolled in this course to rate it");
+        (error as any).status = 403;
+        (error as any).code = "NOT_ENROLLED";
+        throw error;
+      }
+
+      // Validate rating range
+      if (ratingData.rating < 1 || ratingData.rating > 5) {
+        const error = new Error("Rating must be between 1 and 5");
+        (error as any).status = 400;
+        (error as any).code = "INVALID_RATING";
+        throw error;
+      }
+
+      // Calculate new average rating
+      const currentTotal = course.crs_rating * course.rating_count;
+      const newTotal = currentTotal + ratingData.rating;
+      const newRatingCount = course.rating_count + 1;
+      const newAverageRating = Math.round((newTotal / newRatingCount) * 10) / 10; // Round to 1 decimal place
+
+      // Update course rating
+      course.crs_rating = newAverageRating;
+      course.rating_count = newRatingCount;
+
+      await course.save();
+
+      return {
+        course_id: course.crs_id,
+        new_average_rating: newAverageRating,
+        total_ratings: newRatingCount,
+        user_rating: ratingData.rating,
+      };
+    } catch (err: any) {
+      if (err.code) {
+        throw err;
+      }
+      const error = new Error("Failed to rate course");
+      (error as any).status = 500;
+      (error as any).code = "RATE_COURSE_FAILED";
+      (error as any).details = err;
+      throw error;
+    }
+  }
+
+  // Get course rating statistics
+  async getCourseRatingStats(courseId: number) {
+    try {
+      const course = await Course.findOne({
+        where: { crs_id: courseId },
+        select: {
+          crs_id: true,
+          crs_rating: true,
+          rating_count: true,
+        },
+      });
+
+      if (!course) {
+        const error = new Error("Course not found");
+        (error as any).status = 404;
+        (error as any).code = "COURSE_NOT_FOUND";
+        throw error;
+      }
+
+      return {
+        course_id: course.crs_id,
+        average_rating: course.crs_rating,
+        total_ratings: course.rating_count,
+        rating_percentage: course.rating_count > 0 ? Math.round((course.crs_rating / 5) * 100) : 0,
+      };
+    } catch (err: any) {
+      if (err.code) {
+        throw err;
+      }
+      const error = new Error("Failed to get course rating stats");
+      (error as any).status = 500;
+      (error as any).code = "GET_RATING_STATS_FAILED";
+      (error as any).details = err;
+      throw error;
+    }
+  }
 }

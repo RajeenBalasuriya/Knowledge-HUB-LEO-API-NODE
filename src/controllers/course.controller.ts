@@ -2,6 +2,7 @@ import { NextFunction, Response } from "express";
 import { AuthRequest } from "../interfaces/IAuthRequest.interface";
 import { CourseService } from "../services/course.service";
 import { ICourse } from "../interfaces/ICourse.interface";
+import { IRateCourse } from "../interfaces/ICourseRating.interface";
 
 const courseService = new CourseService();
 //create course controller
@@ -200,3 +201,48 @@ export const searchCourseByName = async (
     next(err);
   }
 }
+
+// Rate course controller
+export const rateCourse = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const ratingData: IRateCourse = req.body;
+
+    const ratingResult = await courseService.rateCourse(user, ratingData);
+
+    res.status(200).json({
+      status: "success",
+      message: "Course rated successfully",
+      data: {
+        rating: ratingResult,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Get course rating stats controller
+export const getCourseRatingStats = async (
+  req: AuthRequest<{ id: string }>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const courseId = parseInt(req.params.id);
+    const ratingStats = await courseService.getCourseRatingStats(courseId);
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        rating_stats: ratingStats,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};

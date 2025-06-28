@@ -31,6 +31,9 @@ export class Course extends BaseEntity {
   @Column({ type: "int" })
   enr_count: number;
 
+  @Column({ type: "int", default: 0 })
+  rating_count: number;
+
   @OneToMany(() => Section, (section) => section.course)
   sections: Section[];
 
