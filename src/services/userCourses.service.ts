@@ -3,6 +3,7 @@ import { IJwtUser } from "../interfaces/IUserJwt.interface";
 import { UserCourses } from "../entities/userCourses.entity";
 import { Course } from "../entities/courses.entity";
 import { User } from "../entities/user.entity";
+import { Section } from "../entities/section.entity";
 
 export class UserCoursesService {
   // Enroll user in a course
@@ -64,7 +65,7 @@ export class UserCoursesService {
     }
   }
 
-  // Get user's enrolled courses
+  // Get user's enrolled courses with progress calculation
   async getUserEnrollments(userId: number, page: number = 1, limit: number = 10) {
     try {
       const skip = (page - 1) * limit;
@@ -76,8 +77,40 @@ export class UserCoursesService {
         order: { enrolled_at: "DESC" },
       });
 
+      // Calculate progress for each enrollment
+      const enrollmentsWithProgress = await Promise.all(
+        enrollments.map(async (enrollment) => {
+          // Get all sections for this course
+          const sections = await Section.find({
+            where: { course: { crs_id: enrollment.crs_id } },
+            select: { section_duration: true },
+          });
+
+          // Calculate total course duration
+          const totalDuration = sections.reduce((sum, section) => sum + section.section_duration, 0);
+
+          // Calculate progress percentage
+          const progressPercentage = totalDuration > 0 
+            ? Math.round((enrollment.progress_minutes / totalDuration) * 100)
+            : 0;
+
+          // Ensure percentage doesn't exceed 100%
+          const finalProgressPercentage = Math.min(progressPercentage, 100);
+
+          return {
+            ...enrollment,
+            progress: {
+              progress_minutes: enrollment.progress_minutes,
+              total_duration_minutes: totalDuration,
+              progress_percentage: finalProgressPercentage,
+              sections_count: sections.length,
+            },
+          };
+        })
+      );
+
       return {
-        enrollments,
+        enrollments: enrollmentsWithProgress,
         meta: {
           total: count,
           page,
@@ -93,7 +126,7 @@ export class UserCoursesService {
     }
   }
 
-  // Get specific enrollment
+  // Get specific enrollment with progress calculation
   async getEnrollment(userId: number, courseId: number) {
     try {
       const enrollment = await UserCourses.findOne({
@@ -111,7 +144,32 @@ export class UserCoursesService {
         throw error;
       }
 
-      return enrollment;
+      // Get all sections for this course
+      const sections = await Section.find({
+        where: { course: { crs_id: courseId } },
+        select: { section_duration: true },
+      });
+
+      // Calculate total course duration
+      const totalDuration = sections.reduce((sum, section) => sum + section.section_duration, 0);
+
+      // Calculate progress percentage
+      const progressPercentage = totalDuration > 0 
+        ? Math.round((enrollment.progress_minutes / totalDuration) * 100)
+        : 0;
+
+      // Ensure percentage doesn't exceed 100%
+      const finalProgressPercentage = Math.min(progressPercentage, 100);
+
+      return {
+        ...enrollment,
+        progress: {
+          progress_minutes: enrollment.progress_minutes,
+          total_duration_minutes: totalDuration,
+          progress_percentage: finalProgressPercentage,
+          sections_count: sections.length,
+        },
+      };
     } catch (err: any) {
       if (err.code) {
         throw err;
