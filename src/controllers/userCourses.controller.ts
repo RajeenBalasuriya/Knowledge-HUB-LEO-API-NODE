@@ -49,11 +49,17 @@ export const getUserEnrollments = async (
     const user = req.user;
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
+    let completed: boolean | undefined = undefined;
+    if (typeof req.query.completed === 'string') {
+      if (req.query.completed === 'true') completed = true;
+      if (req.query.completed === 'false') completed = false;
+    }
 
     const { enrollments, meta } = await userCoursesService.getUserEnrollments(
       parseInt(user.id),
       page,
-      limit
+      limit,
+      completed
     );
 
     res.status(200).json({

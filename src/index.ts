@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import express from 'express'
 import http from "http";
+import cors from 'cors';
 import config from './config/config';
 import { errorHandler } from './middlewares/errorHandler';
 import { AppDataSource } from './config/data-source';
@@ -25,7 +26,7 @@ const app = express();
 const server = http.createServer(app); // Wrap Express with HTTP server
 
 app.use(express.json())
-
+app.use(cors());
 //create database connection with type orm 
 AppDataSource.initialize();
 

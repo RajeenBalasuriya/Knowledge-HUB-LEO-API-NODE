@@ -65,12 +65,16 @@ export class UserCoursesService {
     }
   }
 
-  // Get user's enrolled courses with progress calculation
-  async getUserEnrollments(userId: number, page: number = 1, limit: number = 10) {
+  // Get user's enrolled courses with progress calculation and optional completed filter
+  async getUserEnrollments(userId: number, page: number = 1, limit: number = 10, completed?: boolean) {
     try {
       const skip = (page - 1) * limit;
+      const where: any = { user_id: userId };
+      if (typeof completed === 'boolean') {
+        where.completed = completed;
+      }
       const [enrollments, count] = await UserCourses.findAndCount({
-        where: { user_id: userId },
+        where,
         relations: ["course", "user"],
         skip,
         take: limit,
