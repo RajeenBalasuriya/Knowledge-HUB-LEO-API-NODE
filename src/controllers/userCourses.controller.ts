@@ -188,4 +188,53 @@ export const getCourseEnrollments = async (
   } catch (err) {
     next(err);
   }
+};
+
+// Get user enrollment summary
+export const getUserEnrollmentSummary = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const summary = await userCoursesService.getUserEnrollmentSummary(parseInt(user.id));
+    res.status(200).json(summary);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Search a user's enrollments by course name, with optional completion filter and pagination
+export const searchUserEnrollments = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    let completed: boolean | undefined = undefined;
+    if (typeof req.query.completed === 'string') {
+      if (req.query.completed === 'true') completed = true;
+      if (req.query.completed === 'false') completed = false;
+    }
+    const name = typeof req.query.name === 'string' ? req.query.name : undefined;
+    const { enrollments, meta } = await userCoursesService.searchUserEnrollments({
+      userId: parseInt(user.id),
+      name,
+      completed,
+      page,
+      limit,
+    });
+    res.status(200).json({
+      data: {
+        enrollments,
+        meta,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 }; 

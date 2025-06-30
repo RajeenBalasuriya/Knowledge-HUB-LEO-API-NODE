@@ -305,4 +305,110 @@ export class UserCoursesService {
       throw error;
     }
   }
+
+  // Get enrollment summary for a user
+  async getUserEnrollmentSummary(userId: number) {
+    try {
+      // Query all enrollments for the user
+      const [total, completed, inProgress] = await Promise.all([
+        UserCourses.count({ where: { user_id: userId } }),
+        UserCourses.count({ where: { user_id: userId, completed: true } }),
+        UserCourses.count({ where: { user_id: userId, completed: false } }),
+      ]);
+      return {
+        total,
+        inProgress,
+        completed,
+      };
+    } catch (err: any) {
+      return {
+        total: 0,
+        inProgress: 0,
+        completed: 0,
+      };
+    }
+  }
+
+  // Search a user's enrollments by course name, with optional completion filter and pagination
+  async searchUserEnrollments({
+    userId,
+    name,
+    completed,
+    page = 1,
+    limit = 10,
+  }: {
+    userId: number;
+    name?: string;
+    completed?: boolean;
+    page?: number;
+    limit?: number;
+  }) {
+    try {
+      const skip = (page - 1) * limit;
+      console.log(name);
+      console.log(completed);
+      console.log(page);
+      console.log(limit);
+      console.log(userId);
+      
+      // Build query
+      const query = UserCourses.createQueryBuilder("enrollment")
+        .leftJoinAndSelect("enrollment.course", "course")
+        .leftJoinAndSelect("enrollment.user", "user")
+        .where("enrollment.user_id = :userId", { userId });
+
+      if (typeof completed === "boolean") {
+        query.andWhere("enrollment.completed = :completed", { completed });
+      }
+      if (name) {
+        query.andWhere("LOWER(course.crs_name) LIKE :name", { name: `%${name.toLowerCase()}%` });
+      }
+      query.skip(skip).take(limit).orderBy("enrollment.enrolled_at", "DESC");
+
+      const [enrollments, totalItems] = await query.getManyAndCount();
+
+      
+
+      // Calculate progress for each enrollment
+      const enrollmentsWithProgress = await Promise.all(
+        enrollments.map(async (enrollment) => {
+          // Get all sections for this course
+          const sections = await Section.find({
+            where: { course: { crs_id: enrollment.crs_id } },
+            select: { section_duration: true },
+          });
+          const totalDuration = sections.reduce((sum, section) => sum + section.section_duration, 0);
+          const progressPercentage = totalDuration > 0
+            ? Math.round((enrollment.progress_minutes / totalDuration) * 100)
+            : 0;
+          const finalProgressPercentage = Math.min(progressPercentage, 100);
+          return {
+            ...enrollment,
+            progress: {
+              progress_minutes: enrollment.progress_minutes,
+              total_duration_minutes: totalDuration,
+              progress_percentage: finalProgressPercentage,
+              sections_count: sections.length,
+            },
+          };
+        })
+      );
+
+      return {
+        enrollments: enrollmentsWithProgress,
+        meta: {
+          page,
+          limit,
+          totalItems,
+          totalPages: Math.ceil(totalItems / limit),
+        },
+      };
+    } catch (err: any) {
+      const error = new Error("Failed to search user enrollments");
+      (error as any).status = 500;
+      (error as any).code = "SEARCH_USER_ENROLLMENTS_FAILED";
+      (error as any).details = err;
+      throw error;
+    }
+  }
 } 
