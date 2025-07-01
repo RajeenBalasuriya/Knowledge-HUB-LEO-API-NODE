@@ -28,4 +28,17 @@ export class SectionService {
         }
         
     }
+
+    async updateSectionCompleted(sectionId: number, completed: boolean) {
+        const section = await Section.findOne({ where: { section_id: sectionId } });
+        if (!section) {
+            const error = new Error("Section not found");
+            (error as any).status = 404;
+            (error as any).code = "SECTION_NOT_FOUND";
+            throw error;
+        }
+        section.completed = completed;
+        await section.save();
+        return section;
+    }
 }

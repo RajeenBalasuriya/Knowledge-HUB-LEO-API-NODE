@@ -17,6 +17,9 @@ export class Section extends BaseEntity {
   @Column({ type: "int" })
   section_duration: number;
 
+  @Column({ type: "boolean", default: false })
+  completed: boolean;
+
   @ManyToOne(() => Course, (course) => course.sections)
   @JoinColumn({ name: "crs_id" })
   course: Course;

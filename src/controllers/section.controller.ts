@@ -99,3 +99,30 @@ export const createSection = async (
 //     next(err);
 //   }
 // };
+
+// Update section completed status
+export const updateSectionCompleted = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const sectionId = parseInt(req.params.id);
+    const { completed } = req.body;
+    if (typeof completed !== 'boolean') {
+      res.status(400).json({
+        status: "error",
+        message: "'completed' field must be boolean."
+      });
+      return;
+    }
+    const section = await sectionService.updateSectionCompleted(sectionId, completed);
+    res.status(200).json({
+      status: "success",
+      message: "Section completion status updated successfully",
+      data: section,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
