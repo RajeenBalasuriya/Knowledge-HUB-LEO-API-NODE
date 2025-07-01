@@ -17,6 +17,9 @@ export class Section extends BaseEntity {
   @Column({ type: "int" })
   section_duration: number;
 
+  @Column({ type: "varchar", length: 500, nullable: true })
+  video_url: string;
+
   @Column({ type: "boolean", default: false })
   completed: boolean;
 

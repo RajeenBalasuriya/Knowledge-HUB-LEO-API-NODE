@@ -207,9 +207,9 @@ export class UserCoursesService {
         throw error;
       }
 
-      // Update fields if provided
+      // Add to progress_minutes if provided
       if (updateData.progress_minutes !== undefined) {
-        enrollment.progress_minutes = updateData.progress_minutes;
+        enrollment.progress_minutes = (enrollment.progress_minutes || 0) + updateData.progress_minutes;
       }
       if (updateData.completed !== undefined) {
         enrollment.completed = updateData.completed;

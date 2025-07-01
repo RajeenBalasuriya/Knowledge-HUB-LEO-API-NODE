@@ -1,5 +1,6 @@
 import { Answer } from "../entities/answer.entity";
 import { IAnswer } from "../interfaces/IAnswer.interface";
+import { Question } from "../entities/question.entity";
 
 export class AnswerService {
   async createAnswers(answers: IAnswer[]) {
@@ -7,16 +8,15 @@ export class AnswerService {
       const createdAnswers = [];
 
       for (const answer of answers) {
-        const { contetnt, isCorrect, questionId } = answer;
+        const { content, isCorrect, questionId } = answer;
 
-        const newAnswer = {
-          content: contetnt,
-          is_correct: isCorrect,
-          question: { question_id: questionId },
-        };
+        const newAnswer = Answer.create({
+          content,
+          isCorrect,
+          question: Question.create({ question_id: questionId }),
+        });
 
-        const createdAnswer = Answer.create(newAnswer);
-        await createdAnswer.save();
+        await newAnswer.save();
         createdAnswers.push(newAnswer);
       }
 
