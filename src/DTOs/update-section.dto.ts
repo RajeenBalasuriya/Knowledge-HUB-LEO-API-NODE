@@ -18,6 +18,10 @@ export class updateSectionDto {
   video_url?: string;
 
   @IsOptional()
+  @IsString()
+  documentId?: string;
+
+  @IsOptional()
   @IsBoolean()
   completed?: boolean;
 

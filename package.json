@@ -10,17 +10,24 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@langchain/cohere": "^0.3.4",
+    "@langchain/community": "^0.3.48",
+    "@langchain/core": "^0.3.62",
+    "@langchain/textsplitters": "^0.1.0",
+    "@supabase/supabase-js": "^2.50.3",
     "@types/node-cron": "^3.0.11",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "langchain": "^0.3.29",
     "mysql2": "^3.14.1",
     "node-cron": "^3.0.3",
     "socket.io": "^4.8.1",
     "tsx": "^4.20.3",
-    "typeorm": "^0.3.25"
+    "typeorm": "^0.3.25",
+    "youtubei.js": "^14.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",

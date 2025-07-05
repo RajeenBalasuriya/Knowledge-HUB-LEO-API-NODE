@@ -1,5 +1,6 @@
 import { Section } from "../entities/section.entity";
 import { ISection } from "../interfaces/ISection.interface";
+import { v4 as uuidv4 } from 'uuid';
 
 export class SectionService {
     //create section
@@ -8,12 +9,15 @@ export class SectionService {
         const { sec_name, sec_desc, sec_duration, video_url, crs_id } = section;
 
         
+        const docId =  uuidv4();
 
+        
         const newSection = Section.create({
             section_name:sec_name,
             section_desc:sec_desc,
             section_duration:sec_duration,
             video_url: video_url,
+            documentId: docId,
             course: { crs_id }
         });
 

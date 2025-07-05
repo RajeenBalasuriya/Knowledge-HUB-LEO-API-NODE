@@ -21,6 +21,8 @@ import cronRouter from './routes/cron.routes';
 
 import { initSocket } from './web-socket /socket';
 import { registerNotificationListeners } from './web-socket /listeners/notification.listener';
+import queryDocumentRoutes from './routes/queryDocumentRoutes';
+import storeDocumentRoutes from './routes/storeDocumentRoutes';
 
 const app = express();
 const server = http.createServer(app); // Wrap Express with HTTP server
@@ -45,6 +47,8 @@ app.use('/api/question',questionRouter)
 app.use('/api/answer',answerRouter) 
 app.use('/api/user-courses',userCoursesRouter)
 app.use('/api/notifications',notificationRouter)
+app.use('/api/document/query',queryDocumentRoutes)
+app.use('/api/document/store',storeDocumentRoutes)
 app.use('/api/cron',cronRouter)
 
 //health check route

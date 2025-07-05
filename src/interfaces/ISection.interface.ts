@@ -4,5 +4,6 @@ export interface ISection {
   sec_desc: string; 
   sec_duration: number; 
   video_url?: string;
+  documentId?: string;
   crs_id: number; 
 }

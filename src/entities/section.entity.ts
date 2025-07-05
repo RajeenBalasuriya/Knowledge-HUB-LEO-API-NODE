@@ -23,6 +23,9 @@ export class Section extends BaseEntity {
   @Column({ type: "boolean", default: false })
   completed: boolean;
 
+  @Column({ type: "varchar", length: 255, nullable: true })
+  documentId: string;
+
   @ManyToOne(() => Course, (course) => course.sections)
   @JoinColumn({ name: "crs_id" })
   course: Course;

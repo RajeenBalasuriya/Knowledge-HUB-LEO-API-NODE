@@ -14,6 +14,10 @@ export class createSectionDto {
   @IsString()
   video_url?: string;
 
+  @IsOptional()
+  @IsString()
+  documentId?: string;
+
   @IsNumber()
   crs_id: number; // ID of the related course
 }
